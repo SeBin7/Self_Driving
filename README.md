@@ -25,3 +25,4 @@ graph TD
   %% Fallback
   MainSelector --> Follow["Action: follow lane<br>(LED: green)"]
 ```
+![self_driving drawio](https://github.com/user-attachments/assets/a2941f09-c491-4843-bef6-bbecf4995394)
