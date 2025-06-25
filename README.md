@@ -2,22 +2,32 @@
 
 ```mermaid
 graph TD
-  Selector["? Selector: Main Behavior Tree"]
+  Start["Condition: Start Button Pressed?"]
+  MainSelector["Selector: Main Behavior Tree"]
 
-  Selector --> Seq1["→ Sequence: Crosswalk Stop"]
-  Seq1 --> C1["Condition: is_crosswalk_near"]
-  Seq1 --> A1["Action: stop_and_wait"]
+  Start --> MainSelector
 
-  Selector --> Seq2["→ Sequence: Red Light Stop"]
-  Seq2 --> C2["Condition: is_red_light"]
-  Seq2 --> A2["Action: stop_vehicle"]
+  %% 1. 횡단보도 처리
+  MainSelector --> CrosswalkSeq["Sequence: Crosswalk Stop"]
+  CrosswalkSeq --> CrosswalkCond["Condition: crosswalk_detected"]
+  CrosswalkSeq --> CrosswalkAction["Action: stop for 2 seconds"]
 
-  Selector --> Seq3["→ Sequence: Turn Right"]
-  Seq3 --> C3["Condition: is_turn_right_detected"]
-  Seq3 --> A3["Action: turn_right"]
+  %% 2. 신호등 처리
+  MainSelector --> LightSeq["Sequence: Traffic Light Control"]
+  LightSeq --> RedCond["Condition: red_light_detected"]
+  LightSeq --> RedAction["Action: stop until green"]
 
-  Selector --> Seq4["→ Sequence: Park"]
-  Seq4 --> C4["Condition: is_park_detected"]
-  Seq4 --> A4["Action: park_and_shutdown"]
+  %% 3. 우회전 처리
+  MainSelector --> TurnSeq["Sequence: Turn Right"]
+  TurnSeq --> RightSignCond["Condition: right_sign_detected"]
+  TurnSeq --> YellowLed["Action: blink yellow LED"]
+  TurnSeq --> TurnAction["Action: execute right turn"]
 
-  Selector --> A5["Action: follow_lane (fallback)"]
+  %% 4. 주차 처리
+  MainSelector --> ParkSeq["Sequence: Parking"]
+  ParkSeq --> ParkCond["Condition: park_sign_detected"]
+  ParkSeq --> ParkAction["Action: park and shutdown"]
+
+  %% 5. 기본 주행
+  MainSelector --> FollowAction["Action: follow lane"]
+```
