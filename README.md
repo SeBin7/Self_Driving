@@ -1,33 +1,27 @@
-## Self Driving Behavior Tree
+## Self Driving Behavior Tree Flow Chart
 
 ```mermaid
 graph TD
-  Start["Condition: Start Button Pressed?"]
-  MainSelector["Selector: Main Behavior Tree"]
+  Start["Condition: Start Button Pressed"]
+  Start --> MainSelector["Selector: Main Behavior Tree"]
 
-  Start --> MainSelector
+  %% Crosswalk Stop
+  MainSelector --> CrosswalkCheck["Condition: crosswalk_detected"]
+  CrosswalkCheck --> CrosswalkStop["Action: stop for 2 seconds<br>(LED: red)"]
 
-  %% 1. 횡단보도 처리
-  MainSelector --> CrosswalkSeq["Sequence: Crosswalk Stop"]
-  CrosswalkSeq --> CrosswalkCond["Condition: crosswalk_detected"]
-  CrosswalkSeq --> CrosswalkAction["Action: stop for 2 seconds"]
+  %% Traffic Light
+  MainSelector --> RedLightCheck["Condition: red_light_detected"]
+  RedLightCheck --> RedLightWait["Action: stop until green<br>(LED: red)"]
 
-  %% 2. 신호등 처리
-  MainSelector --> LightSeq["Sequence: Traffic Light Control"]
-  LightSeq --> RedCond["Condition: red_light_detected"]
-  LightSeq --> RedAction["Action: stop until green"]
+  %% Turn Right
+  MainSelector --> RightSignCheck["Condition: right_sign_detected"]
+  RightSignCheck --> YellowBlink["Action: blink yellow LED"]
+  YellowBlink --> TurnRight["Action: execute right turn"]
 
-  %% 3. 우회전 처리
-  MainSelector --> TurnSeq["Sequence: Turn Right"]
-  TurnSeq --> RightSignCond["Condition: right_sign_detected"]
-  TurnSeq --> YellowLed["Action: blink yellow LED"]
-  TurnSeq --> TurnAction["Action: execute right turn"]
+  %% Parking
+  MainSelector --> ParkSignCheck["Condition: park_sign_detected"]
+  ParkSignCheck --> ParkStop["Action: park and shutdown"]
 
-  %% 4. 주차 처리
-  MainSelector --> ParkSeq["Sequence: Parking"]
-  ParkSeq --> ParkCond["Condition: park_sign_detected"]
-  ParkSeq --> ParkAction["Action: park and shutdown"]
-
-  %% 5. 기본 주행
-  MainSelector --> FollowAction["Action: follow lane"]
+  %% Fallback
+  MainSelector --> Follow["Action: follow lane<br>(LED: green)"]
 ```
